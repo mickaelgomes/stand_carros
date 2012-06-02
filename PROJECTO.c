@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <locale.h>
 
 #define MAX 1500
 
@@ -46,10 +48,11 @@ int menu(void);
 int menucarro(void);
 int menucliente(void);
 int menuvenda(void);
-CLIENTE editCli(VECTCLI clientes, int tclientes);
+void editCli(VECTCLI v_lientes, int nclientes);
 CLIENTE insertCli(void);
 void showClient(VECTCLI v_clientes, int nclientes);
 AUTOMOVEL insertAut(void);
+void listallcli(VECTCLI v_clientes, int nclientes);
 int main()
 {
   VECTCLI v_clientes;
@@ -57,6 +60,7 @@ int main()
   VECTCAR carros;
   int opcao,opcaocarro,opcaocliente,opcaovenda;
   int n_clientes = 0;
+  setlocale(LC_ALL, "Portuguese");
 
   do
   {
@@ -84,9 +88,13 @@ int main()
                     }
         		break;
             case 2:
+                    editCli(v_clientes, n_clientes);
                 break;
             case 3:
-                showClient(v_clientes, n_clientes);
+                    listallcli(v_clientes, n_clientes);
+                break;
+            case 4:
+                    showClient(v_clientes, n_clientes);
 
                 break;
         	default:
@@ -190,8 +198,7 @@ return(opcaocliente);
 
 
 
-int menuvenda(void)
-{
+int menuvenda(void){
 int opcaovenda;
 do{
 //system("cls");
@@ -214,17 +221,13 @@ printf("ERRO: Opcao invalida");
 return(opcaovenda);
 }
 
-//Inserir Cliente -> feito
-//Editar Cliente");
-//Listar Cliente"); -> feito
-
-
 CLIENTE insertCli(void){
 	CLIENTE info;
+  int temp = 0;
 	printf("Insira o nome do cliente:");
 	scanf("%s", info.nome);
 	printf("Introduza o número do cartao de cidadão/BI:");
-	scanf("%d", &info.num_ident);
+	scanf("%d", &temp);
 	printf("Introduza o NIF do cliente");
 	scanf("%d", &info.nif);
 	printf("Introduza a morado do cliente:");
@@ -252,7 +255,6 @@ void showClient(VECTCLI v_clientes, int nclientes){
     char nome[25];
      printf("Introduza o nome do Cliente:");
      scanf("%s", nome);
-     printf("%s", nome);
     for (i=0;i<nclientes;i++){
         flag = strcmp(v_clientes[i].nome , nome);
         printf("%d", flag);
@@ -267,6 +269,63 @@ void showClient(VECTCLI v_clientes, int nclientes){
 
 
    }
+
+}
+//funcao para listar todos os clientes
+void listallcli(VECTCLI v_clientes, int nclientes){
+
+    int i;
+    for (i=0;i<nclientes;i++){
+        listCli(v_clientes[i]);
+    }
+}
+
+//funcao para editar a informação de um cliente
+void editCli(VECTCLI v_clientes, int nclientes){
+    int i,opt, flag = 0;
+    char nome[25];
+    printf("Introduza o nome do cliente que quer editar:");
+    scanf("%s",nome);
+    for (i = 0; i < nclientes; ++i)
+    {
+      flag = strcmp(v_clientes[i].nome, nome);
+      if (flag == 0)
+      {
+        printf("Cliente Encontrado\n");
+        do{
+        printf("1-Editar nome\n2-Editar número cidadão\n3-Editar NIF\n4-Editar morada\n5-Editar telefone\n6-Voltar ao menu anterior\n");
+        scanf("%d", &opt);
+        switch(opt){
+          case 1:
+            printf("Introduza o nome actualizado do cliente:\n");
+            scanf("%s", v_clientes[i].nome);
+          break;
+          case 2:
+            printf("Introduza o número de BI/Cartão de cidadão actualizado:\n");
+            scanf("%d", &v_clientes[i].num_ident);
+          break;
+          case 3:
+            printf("Introduza o NIF do cliente:\n");
+            scanf("%d", &v_clientes[i].nif);
+            break;
+          case 4:
+            printf("Introduza a morada do cliente actualizada:\n");
+            scanf("%s", v_clientes[i].morada);
+            break;
+          case 5:
+            printf("Introduza o telefone actualizado do cliente\n");
+            scanf("%d", &v_clientes[i].tel);
+            break;
+          default:
+            printf("Opção inválida\n");
+          break;
+        }
+      }while(opt < 6);
+
+      }else{
+        printf("cliente não foi encontrado\n");
+      }
+    }
 
 }
 
