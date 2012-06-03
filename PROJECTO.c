@@ -318,8 +318,16 @@ void editCli(VECTCLI v_clientes, int nclientes){
             scanf("%d", &v_clientes[i].num_ident);
           break;
           case 3:
-            printf("Introduza o NIF do cliente:\n");
-            scanf("%d", &v_clientes[i].nif);
+            do{
+              printf("Introduza o NIF actualizado do cliente:");
+              scanf("%s", temp);
+              flag = validarnif(temp);
+              if(flag == 1){
+                strcpy(v_clientes[i].nif,temp);
+              }else{
+                printf("NIF inválido\n");
+              }
+            }while(flag != 1);
             break;
           case 4:
             printf("Introduza a morada do cliente actualizada:\n");
