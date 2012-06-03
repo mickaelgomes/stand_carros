@@ -22,8 +22,8 @@ typedef struct{
 //struct que vai guardar a informação sobre cada cliente
 typedef struct{
 	char nome[50];
-	int num_ident;
-	int nif;
+	char num_ident[9];
+	char nif[9];
 	char morada[200];
 	int tel;
 }CLIENTE;
@@ -53,6 +53,9 @@ CLIENTE insertCli(void);
 void showClient(VECTCLI v_clientes, int nclientes);
 AUTOMOVEL insertAut(void);
 void listallcli(VECTCLI v_clientes, int nclientes);
+int validarnif(char *numCont);
+int toInt(char *numstr, int *res,int reslen, int acceptX);
+
 int main()
 {
   VECTCLI v_clientes;
@@ -223,13 +226,23 @@ return(opcaovenda);
 
 CLIENTE insertCli(void){
 	CLIENTE info;
-  int temp = 0;
+  char temp[9];
+  int resultado = 20;
 	printf("Insira o nome do cliente:");
 	scanf("%s", info.nome);
-	printf("Introduza o número do cartao de cidadão/BI:");
-	scanf("%d", &temp);
+	do{
+    printf("Introduza o número do cartao de cidadão/BI:");
+    scanf("%s", temp);
+    resultado = validarnif(temp);
+    if(resultado == 1){
+     strcpy(info.num_ident,temp);
+    }else{
+      printf("NIF inválido\n");
+    }
+  }while(resultado != 1);
+
 	printf("Introduza o NIF do cliente");
-	scanf("%d", &info.nif);
+	scanf("%s", &info.nif);
 	printf("Introduza a morado do cliente:");
 	scanf("%s", info.morada);
 	printf("Introduza o telefone/telemovel do cliente:");
@@ -328,8 +341,6 @@ void editCli(VECTCLI v_clientes, int nclientes){
     }
 
 }
-
-
 //Inserir Carro
 AUTOMOVEL insertAut(void){
 	AUTOMOVEL infoA;
@@ -351,3 +362,43 @@ AUTOMOVEL insertAut(void){
 }
 
 
+
+//funções auxiliares
+
+//função para validar nif
+int validarnif(char *numCont){
+  int pos , valor = 0, tamanho= 0;
+  int num[9], *numero;
+  numero =  num;
+  //verificação do primeiro caracter do nif
+  switch(numCont[0])
+  {
+    case '1':case '2':case '5':case '6': case '8': case '9':
+    //caso o primeiro caracter seja um dos acima enunciados irá realizar os seguintes passos
+    //converte todos os digitos
+    for ( ; *numCont; numCont++)
+      {
+        if(isdigit(numCont[0])){
+          if(tamanho == 9){
+            return -1;
+          }
+          *(numero++)  =  *numCont - '0';
+          tamanho++;
+          }
+        }
+        
+    //compara o valor do tamanho com o 9
+    if(tamanho != 9){
+      return 0;
+    }else{
+      for (pos = 0; pos < 9 - 1; pos++)
+      {
+        valor += num[pos] * ( 9 - pos);
+      }
+      valor = valor % 11 ? (11-valor % 11) % 10 : 0;
+        return (valor == num[pos]);
+      
+    }
+  }
+  return 0;
+}
