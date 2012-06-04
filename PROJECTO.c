@@ -51,6 +51,8 @@ int menuvenda(void);
 void editCli(VECTCLI v_lientes, int nclientes);
 CLIENTE insertCli(void);
 void showClient(VECTCLI v_clientes, int nclientes);
+void listCar(VECTCAR vautomovel, int ncarros);
+void showMat(VECTCAR vautomovel, int i);
 AUTOMOVEL insertAut(void);
 void listallcli(VECTCLI v_clientes, int nclientes);
 int validarnif(char *numCont);
@@ -60,9 +62,9 @@ int main()
 {
   VECTCLI v_clientes;
   VECTVEN vendas;
-  VECTCAR carros;
+  VECTCAR vautomovel;
   int opcao,opcaocarro,opcaocliente,opcaovenda;
-  int n_clientes = 0;
+  int n_clientes = 0,n_carros = 0;
   setlocale(LC_ALL, "Portuguese");
 
   do
@@ -71,7 +73,42 @@ int main()
   switch(opcao)
   {
   case 1:
-  opcaocarro = menucarro();
+  do{
+       opcaocarro = menucarro();
+       if(opcaocarro >= 2 && opcaocarro <= 3 && n_carros == 0){
+        printf("Impossivel não existem carros registados! ");
+        }else{
+        
+        
+        switch (opcaocarro)
+        {
+        	case 1:
+                    
+                    vautomovel[n_carros++]=insertAut(); 
+                    
+        		break;
+            case 2:
+                 
+                break;
+            case 3:
+                
+
+                break;
+            case 4:
+                 listCar(vautomovel,n_carros);
+                 break;
+            case 5:
+                 showMat(vautomovel,n_carros);
+                 break;
+        	default:
+        		break;
+        }
+        }
+
+    
+    }while(opcaocarro < 4);
+        
+          
   break;
   case 2:
     do{
@@ -297,6 +334,7 @@ void listallcli(VECTCLI v_clientes, int nclientes){
 void editCli(VECTCLI v_clientes, int nclientes){
     int i,opt, flag = 0;
     char nome[25];
+    char temp[25];
     printf("Introduza o nome do cliente que quer editar:");
     scanf("%s",nome);
     for (i = 0; i < nclientes; ++i)
@@ -320,7 +358,7 @@ void editCli(VECTCLI v_clientes, int nclientes){
           case 3:
             do{
               printf("Introduza o NIF actualizado do cliente:");
-              scanf("%s", temp);
+              scanf("%s", &temp);
               flag = validarnif(temp);
               if(flag == 1){
                 strcpy(v_clientes[i].nif,temp);
@@ -351,22 +389,72 @@ void editCli(VECTCLI v_clientes, int nclientes){
 }
 //Inserir Carro
 AUTOMOVEL insertAut(void){
-	AUTOMOVEL infoA;
-	printf("Insira a marca do carro: ");
-	scanf("%s", infoA.marca);
-	printf("Introduza a matricula do carro: ");
-	scanf("%s", &infoA.matricula);
-	printf("Introduza a data da primeira matricula: ");
-	scanf("%d", &infoA.dmatricula);
-	printf("Introduza o combustivel do carro: ");
-	scanf("%s", infoA.t_comb);
-	printf("Introduza a cilindrada do carro: ");
-	scanf("%d", &infoA.cilindrada);
-	printf("Introduza o preco do carro: ");
-	scanf("%2.f", &infoA.preco);
-    printf("Introduza o estado do carro: ");
-	scanf("%s", &infoA.disponibilidade);
-	return(infoA);
+	AUTOMOVEL vautomovel;
+         char com,dis;
+         printf("Insira a marca:\n");         
+         scanf("%s",&vautomovel.marca);
+         printf("Insira a matricula:\n");         
+         scanf("%s",&vautomovel.matricula);
+         printf("Insira a data da primeira matricula:\n");         
+         scanf("%s",&vautomovel.dmatricula);
+         printf("Insira o combustivel:\n");         
+         scanf("%s",&com);
+         if (toupper(com)=='g') 
+         {
+            vautomovel.t_comb == gasoleo;
+         }
+         printf("Insira a cilindrada:\n");         
+         scanf("%d",&vautomovel.cilindrada);
+         printf("Insira a preco:\n");         
+         scanf("%f",&vautomovel.preco);
+         printf("Insira o estado: (V)endido (D)isponivel \n");         
+         scanf("%s",&dis);
+         if (toupper(dis)=='V') 
+         {
+            vautomovel.disponibilidade = vendido;
+         }
+         return(vautomovel);
+}
+
+//Listar carros
+void listCar(VECTCAR vautomovel, int i)
+{
+      int a=0;
+      for (a=0;a<i;a++){
+          printf("Marca: %s \n", vautomovel[a].marca);
+          printf("matricula: %s \n", vautomovel[a].matricula); 
+          printf("data da matricula: %s \n", vautomovel[a].dmatricula);
+          printf("Combustivel: %s \n", vautomovel[a].t_comb); 
+          printf("Cilindrada: %d \n", vautomovel[a].cilindrada);
+          printf("Preco: %.2f \n", vautomovel[a].preco); 
+          printf("Disponibilidade: %s \n", vautomovel[a].disponibilidade); 
+     } 
+     getch();
+}
+
+//função que vai pesquisar um carro pela matricula
+void showMat(VECTCAR vautomovel, int i)
+{
+      int a=0,compara;
+      char nome[100];
+      printf("Insira a matricula do carro:");
+      scanf("%s",&nome);
+      printf("%s",nome);
+      for (a=0;a<i;a++){
+          compara = strcmp(vautomovel[a].matricula, nome);
+          if (compara == 0) {
+         
+          printf("Marca: %s \n", vautomovel[a].marca);
+          printf("matricula: %s \n", vautomovel[a].matricula); 
+          printf("data da matricula: %s \n", vautomovel[a].dmatricula);
+          printf("Combustivel: %s \n", vautomovel[a].t_comb); 
+          printf("Cilindrada: %d \n", vautomovel[a].cilindrada);
+          printf("Preco: %f2.0 \n", vautomovel[a].preco); 
+          printf("Disponibilidade: %s \n", vautomovel[a].disponibilidade); 
+          }else{
+                printf("\n ATENCAO: Nao existe\n");
+                }
+     }  
 }
 
 
